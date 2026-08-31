@@ -1,15 +1,25 @@
 {
   "name": "senior-mobile-qa",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Portfolio-grade Android mobile QA engineering project using Appium, WebdriverIO, TypeScript, CI, security assessment, and reliability testing.",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run test:android",
     "test:android": "wdio run wdio.conf.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "mobile-testing",
+    "qa-automation",
+    "appium",
+    "webdriverio",
+    "typescript",
+    "android",
+    "quality-engineering",
+    "mobile-security",
+    "github-actions"
+  ],
+  "author": "Yannick Atabong",
+  "license": "MIT",
   "devDependencies": {
     "@wdio/cli": "^9.31.5",
     "@wdio/local-runner": "^9.31.5",
