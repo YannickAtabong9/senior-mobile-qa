@@ -32,14 +32,11 @@ jobs:
 
       - name: Download test APK
         run: |
-          curl -L \
-            -o Android-MyDemoAppRN.apk \
-            https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk
+          curl -L -o Android-MyDemoAppRN.apk https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk
 
       - name: Enable KVM
         run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
-            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
@@ -54,32 +51,27 @@ jobs:
           profile: pixel_6
           disable-animations: true
           emulator-boot-timeout: 1200
-          emulator-options: >-
-            -no-window
-            -gpu swiftshader_indirect
-            -noaudio
-            -no-boot-anim
-            -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
             echo "Connected Android devices:"
             adb devices
 
+            echo "Installing APK..."
             adb install -r Android-MyDemoAppRN.apk
 
-            appium \
-              --address 127.0.0.1 \
-              --port 4723 \
-              --log appium.log &
+            echo "Starting Appium..."
+            appium --address 127.0.0.1 --port 4723 --log appium.log > appium-console.log 2>&1 &
 
+            echo "Waiting for Appium..."
             for i in {1..60}; do
               if curl -sf http://127.0.0.1:4723/status > /dev/null; then
                 echo "Appium is ready"
                 break
               fi
-
-              echo "Waiting for Appium..."
               sleep 2
             done
+
+            curl -f http://127.0.0.1:4723/status
 
             echo "Starting mobile test suite..."
             npm run test:android
@@ -93,4 +85,5 @@ jobs:
             artifacts/screenshots/
             artifacts/page-source/
             appium.log
+            appium-console.log
           if-no-files-found: ignore
