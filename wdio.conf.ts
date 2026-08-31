@@ -17,7 +17,10 @@ export const config: WebdriverIO.Config = {
     platformName: 'Android',
 
     'appium:automationName': 'UiAutomator2',
-    'appium:udid': '192.168.1.76:5555',
+
+    // Physical device locally, emulator in GitHub Actions
+    'appium:udid':
+      process.env.ANDROID_UDID || '192.168.1.76:5555',
 
     'appium:appPackage': 'com.saucelabs.mydemoapp.rn',
     'appium:appActivity': '.MainActivity',
