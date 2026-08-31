@@ -2,7 +2,7 @@
 
 [![Android Mobile Tests](https://github.com/YannickAtabong9/senior-mobile-qa/actions/workflows/android-mobile-tests.yml/badge.svg)](https://github.com/YannickAtabong9/senior-mobile-qa/actions/workflows/android-mobile-tests.yml)
 
-A portfolio-grade Mobile QA Engineering project demonstrating functional automation, test architecture, CI/CD, security assessment, reliability testing, and performance observation against the Sauce Labs My Demo App React Native Android application.
+A portfolio-grade Mobile QA Engineering project demonstrating functional automation, test architecture, continuous integration, security assessment, reliability testing, and performance observation against the Sauce Labs My Demo App React Native Android application.
 
 The project uses a physical Android device for local validation and an Android emulator for automated regression testing in GitHub Actions.
 
@@ -169,7 +169,13 @@ The CI pipeline:
 8. Executes the WebdriverIO regression suite
 9. Uploads diagnostic artifacts when failures occur
 
-The current CI regression run completes all 8 spec files successfully.
+### Current CI Result
+
+```text
+Spec Files: 8 passed, 8 total (100% completed)
+```
+
+The complete regression suite executes successfully on the GitHub-hosted Android emulator.
 
 ---
 
@@ -191,7 +197,7 @@ Assessment areas included:
 
 Scanner findings were treated as investigation leads rather than automatically classified as confirmed vulnerabilities.
 
-Key observations included:
+### Key Security Observations
 
 - APK signed with a debug certificate
 - Application not debuggable at runtime
@@ -201,13 +207,21 @@ Key observations included:
 - Suspected hardcoded secret identified as a WebSocket GUID false positive
 - Legacy Android support identified as a security consideration
 
+The assessment follows a validation-driven approach:
+
+```text
+Static Detection → Triage → Runtime Validation → Evidence → Classification
+```
+
+📄 [View the full Mobile Security Assessment](docs/SECURITY_ASSESSMENT.md)
+
 ---
 
 ## Reliability & Performance
 
 Runtime reliability and basic performance characteristics were assessed using ADB and Android system tooling.
 
-### Cold Launch
+### Cold Launch Testing
 
 10 repeated cold launches were measured.
 
@@ -220,11 +234,13 @@ Runtime reliability and basic performance characteristics were assessed using AD
 | Minimum | 1.97 s |
 | Maximum | 2.29 s |
 
-No arbitrary performance threshold was applied. The results represent measurements from the tested physical device and environment.
+All 10 launches returned a successful cold-launch state.
+
+No arbitrary performance threshold was applied. Results represent measurements from the tested physical device and environment.
 
 ### Crash & ANR Observation
 
-The application was exercised through normal user journeys while Android logs were inspected for:
+The application was exercised through representative user journeys while Android logs were inspected for:
 
 - Fatal exceptions
 - AndroidRuntime crashes
@@ -245,7 +261,9 @@ Memory usage was measured before and after repeated navigation.
 
 Memory increased during repeated navigation and partially recovered while the application remained idle.
 
-This is recorded as an observation rather than a confirmed memory leak. Longer-duration testing and dedicated heap profiling would be required to establish whether retained memory represents a leak.
+The result is recorded as an observation rather than a confirmed memory leak. Longer-duration testing and dedicated heap profiling would be required to determine whether retained memory represents a leak.
+
+📄 [View the full Reliability & Performance Assessment](docs/PERFORMANCE_RELIABILITY.md)
 
 ---
 
@@ -262,43 +280,110 @@ Ensure the following are available:
 - Connected Android device
 - My Demo App installed on the device
 
-Install project dependencies:
+### Install Dependencies
 
 ```bash
 npm install
 ```
 
-Start Appium:
+### Start Appium
 
 ```bash
 appium --address 0.0.0.0 --port 4723
 ```
 
-Run the Android regression suite:
+### Run the Android Regression Suite
 
 ```bash
 npm run test:android
 ```
 
-The local configuration defaults to the physical test device, while the device UDID can be overridden using the `ANDROID_UDID` environment variable for CI execution.
+The local configuration defaults to the physical test device.
+
+The device UDID can also be overridden through the `ANDROID_UDID` environment variable:
+
+```bash
+ANDROID_UDID=<device-id> npm run test:android
+```
+
+This allows the same framework to execute against the local physical device and the GitHub Actions Android emulator.
+
+---
+
+## Project Structure
+
+```text
+senior-mobile-qa/
+├── .github/
+│   └── workflows/
+│       └── android-mobile-tests.yml
+│
+├── docs/
+│   ├── SECURITY_ASSESSMENT.md
+│   └── PERFORMANCE_RELIABILITY.md
+│
+├── src/
+│   └── screens/
+│       ├── CartScreen.ts
+│       ├── CatalogScreen.ts
+│       ├── CheckoutScreen.ts
+│       ├── LoginScreen.ts
+│       └── ProductDetailsScreen.ts
+│
+├── tests/
+│   ├── cart-quantity.spec.ts
+│   ├── cart-remove.spec.ts
+│   ├── cart.spec.ts
+│   ├── checkout-e2e.spec.ts
+│   ├── checkout-validation.spec.ts
+│   ├── login-invalid.spec.ts
+│   ├── login.spec.ts
+│   └── product-selection.spec.ts
+│
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── wdio.conf.ts
+└── README.md
+```
+
+---
+
+## Quality Engineering Practices Demonstrated
+
+This project demonstrates:
+
+- Risk-based mobile test selection
+- End-to-end mobile automation
+- Screen Object architecture
+- Physical-device testing
+- Android emulator testing
+- Test isolation
+- State-aware automation
+- Explicit synchronization
+- Failure diagnostics
+- GitHub Actions CI
+- Security finding validation
+- Static-analysis triage
+- Runtime security validation
+- Crash and ANR investigation
+- Cold-start performance measurement
+- Runtime memory observation
+- Evidence-based defect classification
 
 ---
 
 ## Project Scope
 
-This project currently demonstrates:
+The current project focuses on:
 
 - Android functional automation
 - End-to-end mobile testing
-- Physical-device testing
-- Emulator-based CI testing
-- GitHub Actions integration
-- Test isolation
-- Failure diagnostics
+- Physical-device validation
+- Emulator-based CI regression
 - Mobile security assessment
-- Crash and ANR observation
-- Cold-start measurement
-- Runtime memory observation
+- Runtime reliability assessment
+- Basic performance observation
 
 ### Current Limitations
 
@@ -309,6 +394,15 @@ This project currently demonstrates:
 - Security assessment is not presented as a full penetration test
 - Memory analysis is observational rather than heap-level profiling
 - Performance measurements apply to the tested device and environment
+
+---
+
+## Documentation
+
+Detailed engineering assessments are available here:
+
+- [Mobile Security Assessment](docs/SECURITY_ASSESSMENT.md)
+- [Reliability & Performance Assessment](docs/PERFORMANCE_RELIABILITY.md)
 
 ---
 
