@@ -45,7 +45,7 @@ jobs:
         env:
           ANDROID_UDID: emulator-5554
         with:
-          api-level: 34
+          api-level: 33
           target: default
           arch: x86_64
           profile: pixel_6
@@ -55,24 +55,14 @@ jobs:
           script: |
             echo "Connected Android devices:"
             adb devices
-
             echo "Installing APK..."
             adb install -r Android-MyDemoAppRN.apk
-
             echo "Starting Appium..."
             appium --address 127.0.0.1 --port 4723 --log appium.log > appium-console.log 2>&1 &
-
             echo "Waiting for Appium..."
-            for i in {1..60}; do
-              if curl -sf http://127.0.0.1:4723/status > /dev/null; then
-                echo "Appium is ready"
-                break
-              fi
-              sleep 2
-            done
-
+            timeout 120 bash -c 'until curl -sf http://127.0.0.1:4723/status > /dev/null; do sleep 2; done'
+            echo "Appium is ready"
             curl -f http://127.0.0.1:4723/status
-
             echo "Starting mobile test suite..."
             npm run test:android
 
